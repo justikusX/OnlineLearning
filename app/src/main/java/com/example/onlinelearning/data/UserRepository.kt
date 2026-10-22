@@ -1,5 +1,6 @@
 package com.example.onlinelearning.data
 
+import com.example.onlinelearning.data.model.AppNotification
 import com.example.onlinelearning.data.model.UserProfile
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDate
 
 /**
  * Per-user data in Cloud Firestore, document users/{uid}:
@@ -47,8 +49,13 @@ class UserRepository(private val db: FirebaseFirestore?) {
             put("uid", uid)
             if (!email.isNullOrBlank()) put("email", email)
             if (!name.isNullOrBlank()) put("name", name)
+            put("notifications", FieldValue.arrayUnion(welcomeMessage()))
         }
         doc.set(data, SetOptions.merge()).await()
+    }
+
+    suspend fun updateName(uid: String, name: String) {
+        userDoc(uid).set(mapOf("name" to name), SetOptions.merge()).await()
     }
 
     /** Saves the Base64 avatar, or removes it when [avatar] is null. */
@@ -62,18 +69,57 @@ class UserRepository(private val db: FirebaseFirestore?) {
     }
 
     /** Demo checkout: records the purchase without charging anything. */
-    suspend fun purchase(uid: String, courseId: String) {
-        userDoc(uid).set(mapOf("purchased" to FieldValue.arrayUnion(courseId)), SetOptions.merge()).await()
-    }
-
-    suspend fun completeLesson(uid: String, courseId: String, lessonId: String, minutes: Int) {
+    suspend fun purchase(uid: String, courseId: String, courseTitle: String) {
+        val note = notification(
+            kind = AppNotification.KIND_NOTIFICATION,
+            type = "purchase",
+            title = "Successful purchase!",
+            text = "Course «$courseTitle» is now in My courses",
+        )
         userDoc(uid).set(
-            mapOf(
-                "progress" to mapOf(courseId to FieldValue.arrayUnion(lessonId)),
-                "learnedTodayMinutes" to FieldValue.increment(minutes.toLong()),
-            ),
+            mapOf("purchased" to FieldValue.arrayUnion(courseId), "notifications" to FieldValue.arrayUnion(note)),
             SetOptions.merge(),
         ).await()
+    }
+
+    /**
+     * Marks a lesson as done and adds its minutes to today's activity and the all-time total.
+     * [notes] are optional Message-tab entries (first completion, finished course).
+     */
+    suspend fun completeLesson(
+        uid: String,
+        courseId: String,
+        lessonId: String,
+        minutes: Int,
+        notes: List<Map<String, Any>> = emptyList(),
+    ) {
+        val today = LocalDate.now().toString()
+        val data = buildMap<String, Any> {
+            put("progress", mapOf(courseId to FieldValue.arrayUnion(lessonId)))
+            put("activity", mapOf(today to FieldValue.increment(minutes.toLong())))
+            put("totalMinutes", FieldValue.increment(minutes.toLong()))
+            if (notes.isNotEmpty()) put("notifications", FieldValue.arrayUnion(*notes.toTypedArray()))
+        }
+        userDoc(uid).set(data, SetOptions.merge()).await()
+    }
+
+    private fun welcomeMessage() = notification(
+        kind = AppNotification.KIND_MESSAGE,
+        type = "welcome",
+        title = "Online Learning",
+        text = "Welcome! Start with a free course: History of Computing or Android with Kotlin. " +
+            "Tap a lesson to listen; your progress is saved to your account.",
+    )
+
+    companion object {
+        /** A Message-tab entry as stored in Firestore. */
+        fun notification(kind: String, type: String, title: String, text: String): Map<String, Any> = mapOf(
+            "kind" to kind,
+            "type" to type,
+            "title" to title,
+            "text" to text,
+            "time" to System.currentTimeMillis(),
+        )
     }
 
     private fun userDoc(uid: String): DocumentReference =

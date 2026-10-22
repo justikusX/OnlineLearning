@@ -13,8 +13,14 @@ data class Course(
     /** Where the lesson recordings come from (shown as a credit on the course screen). */
     val sourceName: String = "",
     val sourceUrl: String = "",
+    /** Catalog labels: "bestseller", "popular", "new". */
+    val tags: List<String> = emptyList(),
     val lessons: List<Lesson> = emptyList(),
 ) {
+    val isBestseller: Boolean get() = "bestseller" in tags
+    val isPopular: Boolean get() = "popular" in tags
+    val isNew: Boolean get() = "new" in tags
+
     val durationLabel: String
         get() = "${durationMinutes / 60}h ${durationMinutes % 60}min"
 
@@ -59,7 +65,31 @@ data class UserProfile(
     val purchased: List<String> = emptyList(),
     /** courseId -> ids of completed lessons. */
     val progress: Map<String, List<String>> = emptyMap(),
+    /** Legacy counter (never reset); kept so old documents still load. Use [minutesOn] instead. */
     val learnedTodayMinutes: Int = 0,
     /** Profile photo: 256x256 JPEG encoded as Base64 (see AvatarCodec); empty when not set. */
     val avatar: String = "",
-)
+    /** ISO date (yyyy-MM-dd) -> minutes learned that day. */
+    val activity: Map<String, Long> = emptyMap(),
+    /** Minutes learned over all time. */
+    val totalMinutes: Long = 0,
+    /** Messages and notifications shown on the Message tab, newest last. */
+    val notifications: List<AppNotification> = emptyList(),
+) {
+    fun minutesOn(date: java.time.LocalDate): Int = (activity[date.toString()] ?: 0L).toInt()
+}
+
+/** One item of the Message tab. [kind] is "message" (from the team) or "notification" (an event). */
+data class AppNotification(
+    val kind: String = KIND_NOTIFICATION,
+    /** "purchase", "lesson", "course", "welcome" — picks the icon. */
+    val type: String = "",
+    val title: String = "",
+    val text: String = "",
+    val time: Long = 0,
+) {
+    companion object {
+        const val KIND_MESSAGE = "message"
+        const val KIND_NOTIFICATION = "notification"
+    }
+}

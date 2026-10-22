@@ -63,48 +63,27 @@ import kotlinx.coroutines.delay
 
 private val SPEEDS = listOf(1f, 1.25f, 1.5f, 2f)
 
-/** A lesson counts as done once this share of it has been played. */
-private const val COMPLETE_AT = 0.9f
-
 /**
  * Bottom-sheet player for every lesson kind: streamed audio, streamed video (shown above the controls)
- * and on-device narration of the lesson text. Playback stops when the sheet is closed.
+ * and on-device narration of the lesson text. The course screen owns [playback] and tracks completion;
+ * playback stops when the sheet is closed.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LessonPlayerSheet(
     course: Course,
     lesson: Lesson,
+    playback: LessonPlayback,
     hasNext: Boolean,
     onNext: () -> Unit,
-    onCompleted: (Lesson) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val playback = remember(lesson.id) { LessonPlayback.create(context, lesson) }
-    DisposableEffect(playback) { onDispose { playback.release() } }
-    val currentOnCompleted by rememberUpdatedState(onCompleted)
-
     var speedIndex by remember { mutableIntStateOf(0) }
     var dragging by remember { mutableStateOf(false) }
     var dragValue by remember { mutableFloatStateOf(0f) }
 
     // Keep the chosen speed when moving to the next lesson.
     LaunchedEffect(playback) { playback.setSpeed(SPEEDS[speedIndex]) }
-
-    // Refresh the position and report completion once.
-    LaunchedEffect(playback) {
-        var reported = false
-        while (true) {
-            playback.tick()
-            val d = playback.durationMs
-            if (!reported && (playback.ended || (d > 0 && playback.positionMs >= d * COMPLETE_AT))) {
-                reported = true
-                currentOnCompleted(lesson)
-            }
-            delay(500)
-        }
-    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

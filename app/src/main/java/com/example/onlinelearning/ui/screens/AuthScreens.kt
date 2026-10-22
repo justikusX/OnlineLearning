@@ -1,6 +1,9 @@
 package com.example.onlinelearning.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,10 +24,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.automirrored.filled.EventNote
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -42,23 +47,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.onlinelearning.R
 import com.example.onlinelearning.ui.AuthViewModel
+import com.example.onlinelearning.ui.components.AssetImage
 import com.example.onlinelearning.ui.components.LabeledField
 import com.example.onlinelearning.ui.components.PrimaryButton
 import com.example.onlinelearning.ui.components.SecondaryButton
 import com.example.onlinelearning.ui.theme.Primary
 import kotlinx.coroutines.launch
 
-private data class OnboardingPage(val icon: ImageVector, val title: String, val text: String)
+private data class OnboardingPage(val image: String, val title: String, val text: String)
 
 private val onboardingPages = listOf(
-    OnboardingPage(Icons.AutoMirrored.Filled.MenuBook, "Numerous free\ntrial courses", "Free courses for you to find your way to learning"),
-    OnboardingPage(Icons.Filled.School, "Quick and easy\nlearning", "Easy and fast learning at any time to help you improve various skills"),
-    OnboardingPage(Icons.AutoMirrored.Filled.EventNote, "Create your own\nstudy plan", "Study according to the study plan, make study more motivated"),
+    OnboardingPage("illustrations/onboarding_1.webp", "Numerous free\ntrial courses", "Free courses for you to find your way to learning"),
+    OnboardingPage("illustrations/onboarding_2.webp", "Quick and easy\nlearning", "Easy and fast learning at any time to help you improve various skills"),
+    OnboardingPage("illustrations/onboarding_3.webp", "Create your own\nstudy plan", "Study according to the study plan, make study more motivated"),
 )
 
 @Composable
@@ -78,12 +87,7 @@ fun OnboardingScreen(onSignUp: () -> Unit, onLogIn: () -> Unit, onSkip: () -> Un
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Box(
-                    Modifier.size(220.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(page.icon, null, tint = Primary, modifier = Modifier.size(110.dp))
-                }
+                AssetImage(page.image, Modifier.size(260.dp))
                 Spacer(Modifier.height(40.dp))
                 Text(page.title, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
                 Spacer(Modifier.height(12.dp))
@@ -151,7 +155,8 @@ private fun FirebaseWarning() {
 }
 
 @Composable
-fun LoginScreen(viewModel: AuthViewModel, onLoggedIn: () -> Unit, onSignUp: () -> Unit) {
+fun LoginScreen(viewModel: AuthViewModel, onLoggedIn: () -> Unit, onSignUp: () -> Unit, onPhone: () -> Unit) {
+    val activity = LocalContext.current.findActivity()
     val state by viewModel.state.collectAsStateWithLifecycle()
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -173,11 +178,53 @@ fun LoginScreen(viewModel: AuthViewModel, onLoggedIn: () -> Unit, onSignUp: () -
             Text("Don't have an account?", color = MaterialTheme.colorScheme.onSurfaceVariant)
             TextButton(onClick = onSignUp) { Text("Sign up") }
         }
+        OrLoginWith(
+            onGoogle = { activity?.let { viewModel.signInWithGoogle(it, onLoggedIn) } },
+            onPhone = onPhone,
+        )
+    }
+}
+
+/** "Or login with" row from the design: Google and phone number. */
+@Composable
+private fun OrLoginWith(onGoogle: () -> Unit, onPhone: () -> Unit) {
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            HorizontalDivider(Modifier.weight(1f))
+            Text(
+                "Or login with",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 12.dp),
+            )
+            HorizontalDivider(Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(16.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            SocialButton(onGoogle) {
+                Image(painterResource(R.drawable.ic_google), contentDescription = "Google", modifier = Modifier.size(24.dp))
+            }
+            SocialButton(onPhone) {
+                Icon(Icons.Filled.Phone, contentDescription = "Телефон", tint = Primary)
+            }
+        }
     }
 }
 
 @Composable
-fun SignUpScreen(viewModel: AuthViewModel, onSignedUp: () -> Unit, onLogIn: () -> Unit) {
+private fun SocialButton(onClick: () -> Unit, content: @Composable () -> Unit) {
+    Box(
+        Modifier
+            .size(52.dp)
+            .clip(CircleShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { content() }
+}
+
+@Composable
+fun SignUpScreen(viewModel: AuthViewModel, onSignedUp: () -> Unit, onLogIn: () -> Unit, onPhone: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -208,6 +255,11 @@ fun SignUpScreen(viewModel: AuthViewModel, onSignedUp: () -> Unit, onLogIn: () -
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             Text("Already have an account?", color = MaterialTheme.colorScheme.onSurfaceVariant)
             TextButton(onClick = onLogIn) { Text("Log in") }
+        }
+        TextButton(onClick = onPhone, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Filled.Phone, null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Continue with Phone")
         }
     }
 }

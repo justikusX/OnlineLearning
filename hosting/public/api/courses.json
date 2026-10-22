@@ -11,6 +11,10 @@
       "description": "Audio course from «Arts and Crafts Essays» (1893): how good design is born from purpose, material and making — from working drawings to furniture and printing.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/artscraftsessays_1709_librivox",
+      "tags": [
+        "bestseller",
+        "popular"
+      ],
       "lessons": [
         {
           "id": "pd-1",
@@ -72,6 +76,11 @@
       "durationMinutes": 149,
       "imageUrl": "covers/java-development.webp",
       "description": "Real video lectures from Stanford CS106A «Programming Methodology»: operators and loops, methods, strings and writing your own classes in Java. Free course, licensed CC BY-NC-SA.",
+      "sourceName": "Stanford Engineering Everywhere (CC BY-NC-SA)",
+      "sourceUrl": "https://see.stanford.edu/Course/CS106A",
+      "tags": [
+        "popular"
+      ],
       "lessons": [
         {
           "id": "jd-l06",
@@ -94,9 +103,7 @@
           "videoUrl": "https://archive.org/download/Lecture_9___Programming_Methodology__Stanford_/Lecture_9___Programming_Methodology__Stanford_.ia.mp4",
           "free": true
         }
-      ],
-      "sourceName": "Stanford Engineering Everywhere (CC BY-NC-SA)",
-      "sourceUrl": "https://see.stanford.edu/Course/CS106A"
+      ]
     },
     {
       "id": "history-of-computing",
@@ -109,6 +116,9 @@
       "description": "The first computer, told by its inventor: chapters from «Passages from the Life of a Philosopher» (1864) about the Difference Engine, the Analytical Engine and mechanical notation.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/life_of_a_philosopher_1909_librivox",
+      "tags": [
+        "new"
+      ],
       "lessons": [
         {
           "id": "hc-1",
@@ -172,6 +182,10 @@
       "description": "Audio course from «A Color Notation» (1905) by the creator of the Munsell color system: hue, value, chroma, color mixing and harmony.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/color_notation_1705_librivox",
+      "tags": [
+        "popular",
+        "bestseller"
+      ],
       "lessons": [
         {
           "id": "vd-1",
@@ -247,6 +261,11 @@
       "durationMinutes": 6,
       "imageUrl": "covers/kotlin-android.webp",
       "description": "Short narrated lessons on Kotlin basics, null safety, functions, classes and Jetpack Compose. The phone reads every lesson aloud with its built-in voice, so it works even offline.",
+      "sourceName": "",
+      "sourceUrl": "",
+      "tags": [
+        "new"
+      ],
       "lessons": [
         {
           "id": "kt-1",
@@ -290,9 +309,7 @@
           "text": "Jetpack Compose is the modern way to build Android user interfaces, and it is written entirely in Kotlin. Instead of describing screens in XML files, you write composable functions. A composable function is a normal Kotlin function marked with the at Composable annotation. It describes what the screen should look like for the current data. You arrange elements with layouts such as Column, which stacks items vertically, Row, which places them side by side, and Box, which layers them on top of each other. Text shows a string, Button reacts to taps, and modifiers change size, padding, color and behavior. The key idea is state. When a value that the interface reads changes, Compose automatically calls the affected functions again and redraws only what changed. This process is called recomposition. You keep state with remember and mutable state of, or in a view model that survives screen rotation. Every screen in this app, from the course list to this audio player, is built with Compose. Congratulations, you have finished the course. Now open Android Studio and build something of your own.",
           "free": false
         }
-      ],
-      "sourceName": "",
-      "sourceUrl": ""
+      ]
     },
     {
       "id": "photography",
@@ -305,6 +322,9 @@
       "description": "Audio course from «The Romance of Modern Photography» (1908): how photography was invented, how light makes an image, colour photography and printing.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/romance_modern_photography_2211_librivox",
+      "tags": [
+        "new"
+      ],
       "lessons": [
         {
           "id": "ph-1",

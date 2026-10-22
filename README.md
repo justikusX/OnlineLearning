@@ -13,7 +13,7 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 | `data/UserRepository.kt` | Firestore `users/{uid}`: избранное, покупки, прогресс уроков, аватар |
 | `data/AvatarCodec.kt` | Фото из галереи (Photo Picker) → квадрат 256×256 JPEG в Base64 в профиле Firestore, без Firebase Storage |
 | `ui/ViewModels.kt` | `SessionViewModel`, `AuthViewModel`, `CoursesViewModel` |
-| `ui/screens/*` | Онбординг, Log In / Sign Up, Home, Course (поиск + категории), карточка курса с оплатой, My courses, Account |
+| `ui/screens/*` | Экраны из макета Figma: онбординг, Log In / Sign Up (+ Google и телефон), Continue with Phone / Verify Phone, Home (Learned today, Learning Plan, Meetup), Course (категории, All/Popular/New), Search + Search Filter, карточка курса (BESTSELLER, видео в шапке), Payment Method / Payment Password / Successful purchase, Clocking in!, My courses (сетка), Notifications (message / notification), Account (Favourite, Edit Account, Settings and Privacy, Help) |
 | `ui/player/LessonPlayback.kt`, `ui/screens/LessonPlayerSheet.kt` | Встроенный плеер уроков: аудио и видео (Media3 ExoPlayer) и озвучка текста (TextToSpeech); пауза, перемотка ±10 с, скорость 1–2x, следующий урок |
 
 ## Уроки
@@ -40,7 +40,11 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 
 1. Проект Firebase — `mobileapp-252b2`, Android-приложение с пакетом `com.example.onlinelearning`.
 2. `app/google-services.json` уже лежит в репозитории (для своего проекта замените его файлом из Firebase Console).
-3. Authentication → Sign-in method → включите **Email/Password**.
+3. Authentication → Sign-in method → включите **Email/Password**, **Google** и **Phone**.
+   - Для Google и телефона в Project settings → Your apps добавьте **SHA-1 и SHA-256** ключа, которым подписано
+     приложение (`./gradlew signingReport`, вариант `debug`).
+   - Для проверки входа по телефону без SMS добавьте тестовый номер: Authentication → Sign-in method → Phone →
+     Phone numbers for testing (например, `+7 900 000 00 00` с кодом `123456`).
 4. Firestore Database → **Rules** → вставьте содержимое `firestore.rules` → **Publish**
    (или `firebase deploy --only firestore:rules,hosting`). Без этого регистрация падает с
    `PERMISSION_DENIED`: база, созданная в production-режиме, по умолчанию запрещает всё.
@@ -59,3 +63,9 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 ```
 
 Оплата — демо: «Pay Now» только записывает покупку в Firestore.
+
+## Ресурсы
+
+- Шрифт Poppins — SIL Open Font License, см. `licenses/Poppins-OFL.txt`.
+- Иллюстрации (`app/src/main/assets/illustrations`) и обложки курсов нарисованы для этого проекта.
+- Вход через Facebook из макета не добавлен: нужен App ID из Meta for Developers, а в России Facebook заблокирован.
