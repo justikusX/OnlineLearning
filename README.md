@@ -33,9 +33,8 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 
 ## Настройка Firebase
 
-1. Создайте проект в [Firebase Console](https://console.firebase.google.com), добавьте Android-приложение
-   с пакетом `com.example.onlinelearning`.
-2. Скачайте `google-services.json` в папку `app/`.
+1. Проект Firebase — `mobileapp-252b2`, Android-приложение с пакетом `com.example.onlinelearning`.
+2. `app/google-services.json` уже лежит в репозитории (для своего проекта замените его файлом из Firebase Console).
 3. Authentication → Sign-in method → включите **Email/Password**.
 4. Создайте базу Firestore и задеплойте правила и каталог:
    ```bash
