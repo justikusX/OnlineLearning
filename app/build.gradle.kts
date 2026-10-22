@@ -81,5 +81,8 @@ dependencies {
     // Sign in with Google (Credential Manager)
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    // Pinned: googleid 1.2+ is built with Kotlin 2.4, which this project's Kotlin 2.0 compiler cannot read.
+    implementation("com.google.android.libraries.identity.googleid:googleid") {
+        version { strictly("1.1.1") }
+    }
 }
