@@ -1,0 +1,80 @@
+{
+  "courses": [
+    {
+      "id": "product-design",
+      "title": "Product Design v1.0",
+      "author": "Robertson Connie",
+      "category": "Design",
+      "price": 190.0,
+      "durationMinutes": 976,
+      "imageUrl": "https://picsum.photos/seed/product-design/600/400",
+      "description": "Learn the full product design process: research, wireframes, prototypes and handoff. Hands-on projects and real-world case studies.",
+      "lessons": [
+        { "id": "pd-1", "title": "Welcome to the Course", "durationMinutes": 6, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
+        { "id": "pd-2", "title": "Process overview", "durationMinutes": 6, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": true },
+        { "id": "pd-3", "title": "Discovery", "durationMinutes": 6, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", "free": false },
+        { "id": "pd-4", "title": "User research", "durationMinutes": 12, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", "free": false },
+        { "id": "pd-5", "title": "Prototyping", "durationMinutes": 18, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "free": false }
+      ]
+    },
+    {
+      "id": "java-development",
+      "title": "Java Development",
+      "author": "Nguyen Shane",
+      "category": "Coding",
+      "price": 190.0,
+      "durationMinutes": 976,
+      "imageUrl": "https://picsum.photos/seed/java-development/600/400",
+      "description": "From syntax basics to object-oriented design, collections and concurrency. Build three console apps along the way.",
+      "lessons": [
+        { "id": "jd-1", "title": "Introduction", "durationMinutes": 8, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
+        { "id": "jd-2", "title": "Variables and types", "durationMinutes": 14, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": false },
+        { "id": "jd-3", "title": "Classes and objects", "durationMinutes": 20, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", "free": false }
+      ]
+    },
+    {
+      "id": "visual-design",
+      "title": "Visual Design",
+      "author": "Bert Pullman",
+      "category": "Design",
+      "price": 250.0,
+      "durationMinutes": 840,
+      "imageUrl": "https://picsum.photos/seed/visual-design/600/400",
+      "description": "Typography, color, layout and composition for digital products.",
+      "lessons": [
+        { "id": "vd-1", "title": "Why visual design matters", "durationMinutes": 7, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
+        { "id": "vd-2", "title": "Typography", "durationMinutes": 16, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": false },
+        { "id": "vd-3", "title": "Color theory", "durationMinutes": 15, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "free": false }
+      ]
+    },
+    {
+      "id": "kotlin-android",
+      "title": "Android with Kotlin",
+      "author": "Jane Cooper",
+      "category": "Coding",
+      "price": 120.0,
+      "durationMinutes": 720,
+      "imageUrl": "https://picsum.photos/seed/kotlin-android/600/400",
+      "description": "Jetpack Compose, ViewModel, Retrofit and Firebase: build a real app from scratch.",
+      "lessons": [
+        { "id": "ka-1", "title": "Setting up Android Studio", "durationMinutes": 10, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
+        { "id": "ka-2", "title": "Compose basics", "durationMinutes": 22, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": false },
+        { "id": "ka-3", "title": "Networking with Retrofit", "durationMinutes": 25, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", "free": false }
+      ]
+    },
+    {
+      "id": "photography",
+      "title": "Mobile Photography",
+      "author": "Esther Howard",
+      "category": "Photo",
+      "price": 0.0,
+      "durationMinutes": 180,
+      "imageUrl": "https://picsum.photos/seed/photography/600/400",
+      "description": "Shoot and edit great photos with just your phone.",
+      "lessons": [
+        { "id": "ph-1", "title": "Light and composition", "durationMinutes": 12, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
+        { "id": "ph-2", "title": "Editing basics", "durationMinutes": 14, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "free": true }
+      ]
+    }
+  ]
+}
