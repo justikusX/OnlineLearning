@@ -13,6 +13,23 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 | `data/UserRepository.kt` | Firestore `users/{uid}`: избранное, покупки, прогресс уроков |
 | `ui/ViewModels.kt` | `SessionViewModel`, `AuthViewModel`, `CoursesViewModel` |
 | `ui/screens/*` | Онбординг, Log In / Sign Up, Home, Course (поиск + категории), карточка курса с оплатой, My courses, Account |
+| `ui/screens/AudioPlayerSheet.kt` | Встроенный аудиоплеер (Media3 ExoPlayer): пауза, перемотка ±10 с, скорость 1–2x, следующий урок |
+
+## Аудиоуроки
+
+У урока есть поле `audioUrl` — такой урок играет прямо в приложении; урок засчитывается, когда прослушано 90%.
+Уроки только с `videoUrl` по-прежнему открываются во внешнем плеере.
+
+Записи взяты из [LibriVox](https://librivox.org) (общественное достояние) и стримятся с Internet Archive:
+
+| Курс | Книга |
+|---|---|
+| Design & Craft | *Arts and Crafts Essays* (1893), Walter Crane, William Morris и др. |
+| Color Theory | *A Color Notation* (1905), Albert H. Munsell |
+| The Story of Photography | *The Romance of Modern Photography* (1908), Charles R. Gibson |
+| History of Computing | *Passages from the Life of a Philosopher* (1864), Charles Babbage |
+
+После изменения каталога снова выполните `firebase deploy --only hosting`.
 
 ## Настройка Firebase
 

@@ -2,19 +2,65 @@
   "courses": [
     {
       "id": "product-design",
-      "title": "Product Design v1.0",
-      "author": "Robertson Connie",
+      "title": "Design & Craft",
+      "author": "Walter Crane, William Morris et al.",
       "category": "Design",
       "price": 190.0,
-      "durationMinutes": 976,
+      "durationMinutes": 103,
       "imageUrl": "https://picsum.photos/seed/product-design/600/400",
-      "description": "Learn the full product design process: research, wireframes, prototypes and handoff. Hands-on projects and real-world case studies.",
+      "description": "Audio course from «Arts and Crafts Essays» (1893): how good design is born from purpose, material and making — from working drawings to furniture and printing.",
+      "sourceName": "LibriVox (public domain)",
+      "sourceUrl": "https://archive.org/details/artscraftsessays_1709_librivox",
       "lessons": [
-        { "id": "pd-1", "title": "Welcome to the Course", "durationMinutes": 6, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
-        { "id": "pd-2", "title": "Process overview", "durationMinutes": 6, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": true },
-        { "id": "pd-3", "title": "Discovery", "durationMinutes": 6, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", "free": false },
-        { "id": "pd-4", "title": "User research", "durationMinutes": 12, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", "free": false },
-        { "id": "pd-5", "title": "Prototyping", "durationMinutes": 18, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "free": false }
+        {
+          "id": "pd-1",
+          "title": "Preface: why design matters",
+          "durationMinutes": 9,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_00_various_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "pd-2",
+          "title": "On the revival of design and handicraft",
+          "durationMinutes": 21,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_01_various_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "pd-3",
+          "title": "Decorative painting and design",
+          "durationMinutes": 15,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_03_various_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "pd-4",
+          "title": "Designs and working drawings",
+          "durationMinutes": 13,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_21_various_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "pd-5",
+          "title": "Furniture",
+          "durationMinutes": 8,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_08_various_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "pd-6",
+          "title": "Furniture and the room",
+          "durationMinutes": 15,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_22_various_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "pd-7",
+          "title": "Printing",
+          "durationMinutes": 22,
+          "audioUrl": "https://archive.org/download/artscraftsessays_1709_librivox/artsandcraftsessays_11_various_64kb.mp3",
+          "free": false
+        }
       ]
     },
     {
@@ -27,24 +73,167 @@
       "imageUrl": "https://picsum.photos/seed/java-development/600/400",
       "description": "From syntax basics to object-oriented design, collections and concurrency. Build three console apps along the way.",
       "lessons": [
-        { "id": "jd-1", "title": "Introduction", "durationMinutes": 8, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
-        { "id": "jd-2", "title": "Variables and types", "durationMinutes": 14, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": false },
-        { "id": "jd-3", "title": "Classes and objects", "durationMinutes": 20, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", "free": false }
+        {
+          "id": "jd-1",
+          "title": "Introduction",
+          "durationMinutes": 8,
+          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          "free": true
+        },
+        {
+          "id": "jd-2",
+          "title": "Variables and types",
+          "durationMinutes": 14,
+          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          "free": false
+        },
+        {
+          "id": "jd-3",
+          "title": "Classes and objects",
+          "durationMinutes": 20,
+          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+          "free": false
+        }
+      ]
+    },
+    {
+      "id": "history-of-computing",
+      "title": "History of Computing",
+      "author": "Charles Babbage",
+      "category": "Coding",
+      "price": 0.0,
+      "durationMinutes": 178,
+      "imageUrl": "https://picsum.photos/seed/history-of-computing/600/400",
+      "description": "The first computer, told by its inventor: chapters from «Passages from the Life of a Philosopher» (1864) about the Difference Engine, the Analytical Engine and mechanical notation.",
+      "sourceName": "LibriVox (public domain)",
+      "sourceUrl": "https://archive.org/details/life_of_a_philosopher_1909_librivox",
+      "lessons": [
+        {
+          "id": "hc-1",
+          "title": "Difference Engine No. 1, part 1",
+          "durationMinutes": 28,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_05_babbage_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "hc-2",
+          "title": "Difference Engine No. 1, part 2",
+          "durationMinutes": 30,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_06_babbage_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "hc-3",
+          "title": "Difference Engine No. 2",
+          "durationMinutes": 29,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_08_babbage_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "hc-4",
+          "title": "The Analytical Engine, part 1",
+          "durationMinutes": 35,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_09_babbage_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "hc-5",
+          "title": "The Analytical Engine, part 2",
+          "durationMinutes": 29,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_10_babbage_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "hc-6",
+          "title": "Mechanical notation",
+          "durationMinutes": 9,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_11_babbage_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "hc-7",
+          "title": "Picking locks and deciphering",
+          "durationMinutes": 18,
+          "audioUrl": "https://archive.org/download/life_of_a_philosopher_1909_librivox/lifeofaphilosopher_20_babbage_64kb.mp3",
+          "free": false
+        }
       ]
     },
     {
       "id": "visual-design",
-      "title": "Visual Design",
-      "author": "Bert Pullman",
+      "title": "Color Theory",
+      "author": "Albert H. Munsell",
       "category": "Design",
       "price": 250.0,
-      "durationMinutes": 840,
+      "durationMinutes": 165,
       "imageUrl": "https://picsum.photos/seed/visual-design/600/400",
-      "description": "Typography, color, layout and composition for digital products.",
+      "description": "Audio course from «A Color Notation» (1905) by the creator of the Munsell color system: hue, value, chroma, color mixing and harmony.",
+      "sourceName": "LibriVox (public domain)",
+      "sourceUrl": "https://archive.org/details/color_notation_1705_librivox",
       "lessons": [
-        { "id": "vd-1", "title": "Why visual design matters", "durationMinutes": 7, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
-        { "id": "vd-2", "title": "Typography", "durationMinutes": 16, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": false },
-        { "id": "vd-3", "title": "Color theory", "durationMinutes": 15, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "free": false }
+        {
+          "id": "vd-1",
+          "title": "Preface and introduction",
+          "durationMinutes": 6,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_00_munsell_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "vd-2",
+          "title": "Color names",
+          "durationMinutes": 16,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_01_munsell_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "vd-3",
+          "title": "Color qualities: hue, value, chroma",
+          "durationMinutes": 27,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_03_munsell_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "vd-4",
+          "title": "Color mixture",
+          "durationMinutes": 30,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_05_munsell_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "vd-5",
+          "title": "Prismatic colors",
+          "durationMinutes": 12,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_07_munsell_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "vd-6",
+          "title": "The pigment color sphere",
+          "durationMinutes": 22,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_09_munsell_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "vd-7",
+          "title": "Color notation",
+          "durationMinutes": 12,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_11_munsell_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "vd-8",
+          "title": "Color harmony",
+          "durationMinutes": 24,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_12_munsell_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "vd-9",
+          "title": "Glossary of color terms",
+          "durationMinutes": 16,
+          "audioUrl": "https://archive.org/download/color_notation_1705_librivox/colornotation_14_munsell_64kb.mp3",
+          "free": false
+        }
       ]
     },
     {
@@ -57,23 +246,97 @@
       "imageUrl": "https://picsum.photos/seed/kotlin-android/600/400",
       "description": "Jetpack Compose, ViewModel, Retrofit and Firebase: build a real app from scratch.",
       "lessons": [
-        { "id": "ka-1", "title": "Setting up Android Studio", "durationMinutes": 10, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
-        { "id": "ka-2", "title": "Compose basics", "durationMinutes": 22, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "free": false },
-        { "id": "ka-3", "title": "Networking with Retrofit", "durationMinutes": 25, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", "free": false }
+        {
+          "id": "ka-1",
+          "title": "Setting up Android Studio",
+          "durationMinutes": 10,
+          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          "free": true
+        },
+        {
+          "id": "ka-2",
+          "title": "Compose basics",
+          "durationMinutes": 22,
+          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          "free": false
+        },
+        {
+          "id": "ka-3",
+          "title": "Networking with Retrofit",
+          "durationMinutes": 25,
+          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+          "free": false
+        }
       ]
     },
     {
       "id": "photography",
-      "title": "Mobile Photography",
-      "author": "Esther Howard",
+      "title": "The Story of Photography",
+      "author": "Charles R. Gibson",
       "category": "Photo",
       "price": 0.0,
-      "durationMinutes": 180,
+      "durationMinutes": 194,
       "imageUrl": "https://picsum.photos/seed/photography/600/400",
-      "description": "Shoot and edit great photos with just your phone.",
+      "description": "Audio course from «The Romance of Modern Photography» (1908): how photography was invented, how light makes an image, colour photography and printing.",
+      "sourceName": "LibriVox (public domain)",
+      "sourceUrl": "https://archive.org/details/romance_modern_photography_2211_librivox",
       "lessons": [
-        { "id": "ph-1", "title": "Light and composition", "durationMinutes": 12, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "free": true },
-        { "id": "ph-2", "title": "Editing basics", "durationMinutes": 14, "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "free": true }
+        {
+          "id": "ph-1",
+          "title": "How photography came to be invented",
+          "durationMinutes": 18,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_01_gibson_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "ph-2",
+          "title": "How light makes the photograph",
+          "durationMinutes": 17,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_22_gibson_64kb.mp3",
+          "free": true
+        },
+        {
+          "id": "ph-3",
+          "title": "A camera without a lens",
+          "durationMinutes": 20,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_21_gibson_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "ph-4",
+          "title": "Instantaneous photography",
+          "durationMinutes": 19,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_04_gibson_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "ph-5",
+          "title": "Can we photograph in colours?",
+          "durationMinutes": 42,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_05_gibson_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "ph-6",
+          "title": "More about colour photography",
+          "durationMinutes": 28,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_06_gibson_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "ph-7",
+          "title": "Photographing under difficulties",
+          "durationMinutes": 16,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_15_gibson_64kb.mp3",
+          "free": false
+        },
+        {
+          "id": "ph-8",
+          "title": "Photographing the stars",
+          "durationMinutes": 34,
+          "audioUrl": "https://archive.org/download/romance_modern_photography_2211_librivox/romanceofmodernphotography_19_gibson_64kb.mp3",
+          "free": false
+        }
       ]
     }
   ]

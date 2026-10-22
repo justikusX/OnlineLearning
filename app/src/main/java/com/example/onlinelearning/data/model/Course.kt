@@ -10,6 +10,9 @@ data class Course(
     val durationMinutes: Int = 0,
     val imageUrl: String = "",
     val description: String = "",
+    /** Where the lesson recordings come from (shown as a credit on the course screen). */
+    val sourceName: String = "",
+    val sourceUrl: String = "",
     val lessons: List<Lesson> = emptyList(),
 ) {
     val durationLabel: String
@@ -23,10 +26,16 @@ data class Lesson(
     val id: String = "",
     val title: String = "",
     val durationMinutes: Int = 0,
+    /** Audio lessons play inside the app; takes priority over [videoUrl]. */
+    val audioUrl: String = "",
+    /** Legacy video lessons are opened in an external player. */
     val videoUrl: String = "",
     /** Free lessons can be played before the course is bought. */
     val free: Boolean = false,
-)
+) {
+    val isAudio: Boolean
+        get() = audioUrl.isNotBlank()
+}
 
 /** Per-user state stored in Firestore under users/{uid}. */
 data class UserProfile(

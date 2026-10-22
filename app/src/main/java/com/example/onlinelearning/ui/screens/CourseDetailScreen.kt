@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
@@ -89,9 +90,18 @@ fun CourseDetailScreen(
     val favorite = profile?.favorites?.contains(course.id) == true
     val completed = profile?.progress?.get(course.id).orEmpty()
 
+    var playing by remember { mutableStateOf<Lesson?>(null) }
+
+    fun isUnlocked(lesson: Lesson) = purchased || lesson.free
+
     fun play(lesson: Lesson) {
-        if (!purchased && !lesson.free) {
+        if (!isUnlocked(lesson)) {
             showMessage("Купите курс, чтобы открыть этот урок")
+            return
+        }
+        if (lesson.isAudio) {
+            // Audio lessons play in-app; progress is saved once most of the lesson has been heard.
+            playing = lesson
             return
         }
         try {
@@ -103,6 +113,9 @@ fun CourseDetailScreen(
             showMessage("Нет приложения для воспроизведения видео")
         }
     }
+
+    fun nextAfter(lesson: Lesson): Lesson? =
+        course.lessons.dropWhile { it.id != lesson.id }.drop(1).firstOrNull()
 
     Column(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.weight(1f)) {
@@ -135,13 +148,24 @@ fun CourseDetailScreen(
                     Text("About this course", style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(4.dp))
                     Text(course.description, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (course.sourceName.isNotBlank()) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "🎧 Аудиоуроки · ${course.sourceName}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Primary,
+                            modifier = Modifier.clickable {
+                                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(course.sourceUrl))) }
+                            },
+                        )
+                    }
                 }
             }
             itemsIndexed(course.lessons, key = { _, l -> l.id }) { index, lesson ->
                 LessonRow(
                     number = index + 1,
                     lesson = lesson,
-                    unlocked = purchased || lesson.free,
+                    unlocked = isUnlocked(lesson),
                     done = lesson.id in completed,
                     onClick = { play(lesson) },
                 )
@@ -174,6 +198,18 @@ fun CourseDetailScreen(
                 }
             }
         }
+    }
+
+    playing?.let { lesson ->
+        val next = nextAfter(lesson)
+        AudioPlayerSheet(
+            course = course,
+            lesson = lesson,
+            hasNext = next != null,
+            onNext = { next?.let(::play) },
+            onCompleted = { session.completeLesson(course, it) },
+            onDismiss = { playing = null },
+        )
     }
 
     if (showPayment) {
@@ -214,7 +250,7 @@ private fun LessonRow(number: Int, lesson: Lesson, unlocked: Boolean, done: Bool
         Column(Modifier.weight(1f)) {
             Text(lesson.title, style = MaterialTheme.typography.titleMedium)
             Text(
-                "${lesson.durationMinutes} mins" + if (done) " ✓" else "",
+                (if (lesson.isAudio) "Audio · " else "") + "${lesson.durationMinutes} mins" + if (done) " ✓" else "",
                 style = MaterialTheme.typography.bodySmall,
                 color = if (done) Orange else MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -226,7 +262,15 @@ private fun LessonRow(number: Int, lesson: Lesson, unlocked: Boolean, done: Bool
                 .background(if (unlocked) Primary else Primary.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(if (unlocked) Icons.Filled.PlayArrow else Icons.Filled.Lock, null, tint = androidx.compose.ui.graphics.Color.White)
+            Icon(
+                when {
+                    !unlocked -> Icons.Filled.Lock
+                    lesson.isAudio -> Icons.Filled.Headphones
+                    else -> Icons.Filled.PlayArrow
+                },
+                null,
+                tint = androidx.compose.ui.graphics.Color.White,
+            )
         }
     }
 }
