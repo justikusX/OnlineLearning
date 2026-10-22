@@ -126,10 +126,14 @@ fun LabeledField(
     }
 }
 
+/**
+ * Course cover. Absolute http(s) URLs are loaded from the network; relative paths such as
+ * "covers/visual-design.webp" come from app/src/main/assets, so covers work offline.
+ */
 @Composable
 fun CourseImage(url: String, modifier: Modifier = Modifier) {
     AsyncImage(
-        model = url,
+        model = if (url.startsWith("http://") || url.startsWith("https://")) url else "file:///android_asset/$url",
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier

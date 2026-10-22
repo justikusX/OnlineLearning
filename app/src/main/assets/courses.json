@@ -7,7 +7,7 @@
       "category": "Design",
       "price": 190.0,
       "durationMinutes": 103,
-      "imageUrl": "https://picsum.photos/seed/product-design/600/400",
+      "imageUrl": "covers/product-design.webp",
       "description": "Audio course from «Arts and Crafts Essays» (1893): how good design is born from purpose, material and making — from working drawings to furniture and printing.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/artscraftsessays_1709_librivox",
@@ -70,7 +70,7 @@
       "category": "Coding",
       "price": 190.0,
       "durationMinutes": 976,
-      "imageUrl": "https://picsum.photos/seed/java-development/600/400",
+      "imageUrl": "covers/java-development.webp",
       "description": "From syntax basics to object-oriented design, collections and concurrency. Build three console apps along the way.",
       "lessons": [
         {
@@ -103,7 +103,7 @@
       "category": "Coding",
       "price": 0.0,
       "durationMinutes": 178,
-      "imageUrl": "https://picsum.photos/seed/history-of-computing/600/400",
+      "imageUrl": "covers/history-of-computing.webp",
       "description": "The first computer, told by its inventor: chapters from «Passages from the Life of a Philosopher» (1864) about the Difference Engine, the Analytical Engine and mechanical notation.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/life_of_a_philosopher_1909_librivox",
@@ -166,7 +166,7 @@
       "category": "Design",
       "price": 250.0,
       "durationMinutes": 165,
-      "imageUrl": "https://picsum.photos/seed/visual-design/600/400",
+      "imageUrl": "covers/visual-design.webp",
       "description": "Audio course from «A Color Notation» (1905) by the creator of the Munsell color system: hue, value, chroma, color mixing and harmony.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/color_notation_1705_librivox",
@@ -243,7 +243,7 @@
       "category": "Coding",
       "price": 120.0,
       "durationMinutes": 720,
-      "imageUrl": "https://picsum.photos/seed/kotlin-android/600/400",
+      "imageUrl": "covers/kotlin-android.webp",
       "description": "Jetpack Compose, ViewModel, Retrofit and Firebase: build a real app from scratch.",
       "lessons": [
         {
@@ -276,7 +276,7 @@
       "category": "Photo",
       "price": 0.0,
       "durationMinutes": 194,
-      "imageUrl": "https://picsum.photos/seed/photography/600/400",
+      "imageUrl": "covers/photography.webp",
       "description": "Audio course from «The Romance of Modern Photography» (1908): how photography was invented, how light makes an image, colour photography and printing.",
       "sourceName": "LibriVox (public domain)",
       "sourceUrl": "https://archive.org/details/romance_modern_photography_2211_librivox",
