@@ -36,6 +36,21 @@ class UserRepository(private val db: FirebaseFirestore?) {
         userDoc(uid).set(data, SetOptions.merge()).await()
     }
 
+    /**
+     * Creates users/{uid} if it is missing, e.g. when sign-up created the Auth account but the
+     * Firestore write failed. Never overwrites an existing name with a blank one.
+     */
+    suspend fun ensureProfile(uid: String, name: String?, email: String?) {
+        val doc = userDoc(uid)
+        if (doc.get().await().exists()) return
+        val data = buildMap<String, Any> {
+            put("uid", uid)
+            if (!email.isNullOrBlank()) put("email", email)
+            if (!name.isNullOrBlank()) put("name", name)
+        }
+        doc.set(data, SetOptions.merge()).await()
+    }
+
     suspend fun setFavorite(uid: String, courseId: String, favorite: Boolean) {
         val value = if (favorite) FieldValue.arrayUnion(courseId) else FieldValue.arrayRemove(courseId)
         userDoc(uid).set(mapOf("favorites" to value), SetOptions.merge()).await()

@@ -36,10 +36,9 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 1. Проект Firebase — `mobileapp-252b2`, Android-приложение с пакетом `com.example.onlinelearning`.
 2. `app/google-services.json` уже лежит в репозитории (для своего проекта замените его файлом из Firebase Console).
 3. Authentication → Sign-in method → включите **Email/Password**.
-4. Создайте базу Firestore и задеплойте правила и каталог:
-   ```bash
-   firebase deploy --only firestore:rules,hosting
-   ```
+4. Firestore Database → **Rules** → вставьте содержимое `firestore.rules` → **Publish**
+   (или `firebase deploy --only firestore:rules,hosting`). Без этого регистрация падает с
+   `PERMISSION_DENIED`: база, созданная в production-режиме, по умолчанию запрещает всё.
 5. В `gradle.properties` укажите `COURSES_API_BASE_URL=https://<project-id>.web.app/api/`.
 
 Без `google-services.json` проект собирается и запускается: каталог работает, а вход и сохранение прогресса

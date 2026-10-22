@@ -9,6 +9,7 @@ import com.example.onlinelearning.LearningApp
 import com.example.onlinelearning.data.AuthRepository
 import com.example.onlinelearning.data.CourseRepository
 import com.example.onlinelearning.data.UserRepository
+import com.example.onlinelearning.data.toUserMessage
 import com.example.onlinelearning.data.model.Course
 import com.example.onlinelearning.data.model.Lesson
 import com.example.onlinelearning.data.model.UserProfile
@@ -50,13 +51,28 @@ class SessionViewModel(
     val user: StateFlow<FirebaseUser?> =
         auth.userFlow.stateIn(viewModelScope, SharingStarted.Eagerly, auth.currentUser)
 
-    val profile: StateFlow<UserProfile?> = user
-        .flatMapLatest { users.profileFlow(it?.uid) }
-        .catch { emit(null) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
     private val _messages = MutableSharedFlow<String>(extraBufferCapacity = 4)
     val messages = _messages.asSharedFlow()
+
+    val profile: StateFlow<UserProfile?> = user
+        .flatMapLatest { users.profileFlow(it?.uid) }
+        .catch {
+            _messages.tryEmit(it.toUserMessage())
+            emit(null)
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    init {
+        // Every signed-in user gets a users/{uid} document, even if it failed to be created at sign-up.
+        viewModelScope.launch {
+            user.collect { u ->
+                if (u != null) {
+                    runCatching { users.ensureProfile(u.uid, u.displayName, u.email) }
+                        .onFailure { _messages.tryEmit(it.toUserMessage()) }
+                }
+            }
+        }
+    }
 
     fun toggleFavorite(courseId: String) = withUser { uid ->
         val isFavorite = profile.value?.favorites?.contains(courseId) == true
@@ -81,7 +97,7 @@ class SessionViewModel(
             return
         }
         viewModelScope.launch {
-            runCatching { block(uid) }.onFailure { _messages.tryEmit(it.message ?: "Ошибка Firebase") }
+            runCatching { block(uid) }.onFailure { _messages.tryEmit(it.toUserMessage()) }
         }
     }
 }
@@ -116,7 +132,9 @@ class AuthViewModel(
             password.length < 6 -> _state.value = AuthUiState(error = "Пароль должен быть не короче 6 символов")
             else -> run(onSuccess) {
                 val user = auth.signUp(name.trim(), email.trim(), password)
-                users.createProfile(user.uid, name.trim(), email.trim())
+                // The account already exists at this point, so a Firestore failure must not keep the user
+                // on the sign-up screen: SessionViewModel retries the profile and reports the error.
+                runCatching { users.createProfile(user.uid, name.trim(), email.trim()) }
             }
         }
     }
@@ -130,7 +148,7 @@ class AuthViewModel(
             _state.value = AuthUiState(loading = true)
             _state.value = runCatching { auth.sendPasswordReset(email.trim()) }.fold(
                 onSuccess = { AuthUiState(info = "Письмо для сброса пароля отправлено") },
-                onFailure = { AuthUiState(error = it.message) },
+                onFailure = { AuthUiState(error = it.toUserMessage()) },
             )
         }
     }
@@ -145,7 +163,7 @@ class AuthViewModel(
                     _state.value = AuthUiState()
                     onSuccess()
                 }
-                .onFailure { _state.value = AuthUiState(error = it.message ?: "Не удалось выполнить вход") }
+                .onFailure { _state.value = AuthUiState(error = it.toUserMessage()) }
         }
     }
 }
