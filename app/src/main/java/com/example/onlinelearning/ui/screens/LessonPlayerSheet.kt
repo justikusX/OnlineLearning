@@ -6,16 +6,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +37,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -47,29 +50,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.ui.PlayerView
 import com.example.onlinelearning.data.model.Course
 import com.example.onlinelearning.data.model.Lesson
+import com.example.onlinelearning.data.model.LessonKind
+import com.example.onlinelearning.ui.player.LessonPlayback
+import com.example.onlinelearning.ui.player.MediaLessonPlayback
 import com.example.onlinelearning.ui.theme.PinkLight
 import com.example.onlinelearning.ui.theme.Primary
 import kotlinx.coroutines.delay
 
 private val SPEEDS = listOf(1f, 1.25f, 1.5f, 2f)
 
-/** A lesson counts as listened once this share of it has been played. */
+/** A lesson counts as done once this share of it has been played. */
 private const val COMPLETE_AT = 0.9f
 
 /**
- * Bottom-sheet player for audio lessons. Streams [Lesson.audioUrl] with Media3 ExoPlayer;
- * playback stops when the sheet is closed.
+ * Bottom-sheet player for every lesson kind: streamed audio, streamed video (shown above the controls)
+ * and on-device narration of the lesson text. Playback stops when the sheet is closed.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AudioPlayerSheet(
+fun LessonPlayerSheet(
     course: Course,
     lesson: Lesson,
     hasNext: Boolean,
@@ -78,70 +81,26 @@ fun AudioPlayerSheet(
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
-    val player = remember { ExoPlayer.Builder(context).build() }
-    val currentLesson by rememberUpdatedState(lesson)
+    val playback = remember(lesson.id) { LessonPlayback.create(context, lesson) }
+    DisposableEffect(playback) { onDispose { playback.release() } }
     val currentOnCompleted by rememberUpdatedState(onCompleted)
 
-    var isPlaying by remember { mutableStateOf(false) }
-    var buffering by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-    var position by remember { mutableLongStateOf(0L) }
-    var duration by remember { mutableLongStateOf(0L) }
+    var speedIndex by remember { mutableIntStateOf(0) }
     var dragging by remember { mutableStateOf(false) }
     var dragValue by remember { mutableFloatStateOf(0f) }
-    var speedIndex by remember { mutableStateOf(0) }
-    var reportedFor by remember { mutableStateOf<String?>(null) }
 
-    fun markCompleted() {
-        if (reportedFor != currentLesson.id) {
-            reportedFor = currentLesson.id
-            currentOnCompleted(currentLesson)
-        }
-    }
+    // Keep the chosen speed when moving to the next lesson.
+    LaunchedEffect(playback) { playback.setSpeed(SPEEDS[speedIndex]) }
 
-    DisposableEffect(player) {
-        val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(playing: Boolean) {
-                isPlaying = playing
-            }
-
-            override fun onPlaybackStateChanged(state: Int) {
-                buffering = state == Player.STATE_BUFFERING
-                if (state == Player.STATE_READY) duration = player.duration.coerceAtLeast(0L)
-                if (state == Player.STATE_ENDED) markCompleted()
-            }
-
-            override fun onPlayerError(e: PlaybackException) {
-                buffering = false
-                error = "Не удалось загрузить урок. Проверьте подключение к интернету."
-            }
-        }
-        player.addListener(listener)
-        onDispose {
-            player.removeListener(listener)
-            player.release()
-        }
-    }
-
-    // Load a new lesson whenever the selection changes (also on "next lesson").
-    LaunchedEffect(lesson.id) {
-        error = null
-        buffering = true
-        position = 0L
-        duration = 0L
-        player.setMediaItem(MediaItem.fromUri(lesson.audioUrl))
-        player.prepare()
-        player.playWhenReady = true
-    }
-
-    // Poll the position for the progress bar and completion tracking.
-    LaunchedEffect(player) {
+    // Refresh the position and report completion once.
+    LaunchedEffect(playback) {
+        var reported = false
         while (true) {
-            position = player.currentPosition
-            val d = player.duration
-            if (d != C.TIME_UNSET && d > 0) {
-                duration = d
-                if (position >= d * COMPLETE_AT) markCompleted()
+            playback.tick()
+            val d = playback.durationMs
+            if (!reported && (playback.ended || (d > 0 && playback.positionMs >= d * COMPLETE_AT))) {
+                reported = true
+                currentOnCompleted(lesson)
             }
             delay(500)
         }
@@ -155,18 +114,33 @@ fun AudioPlayerSheet(
             Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(
-                Modifier.size(96.dp).clip(CircleShape).background(PinkLight),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(Icons.Filled.Headphones, null, tint = Primary, modifier = Modifier.size(48.dp))
+            if (lesson.kind == LessonKind.VIDEO && playback is MediaLessonPlayback) {
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            useController = false
+                            keepScreenOn = true
+                            player = playback.player
+                        }
+                    },
+                    update = { it.player = playback.player },
+                    modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(12.dp)).background(Color.Black),
+                )
+            } else {
+                Box(
+                    Modifier.size(96.dp).clip(CircleShape).background(PinkLight),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        if (lesson.kind == LessonKind.NARRATION) Icons.Filled.RecordVoiceOver else Icons.Filled.Headphones,
+                        null,
+                        tint = Primary,
+                        modifier = Modifier.size(48.dp),
+                    )
+                }
             }
             Spacer(Modifier.height(16.dp))
-            Text(
-                lesson.title,
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-            )
+            Text(lesson.title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
             Text(
                 "${course.title} · ${course.author}",
                 style = MaterialTheme.typography.bodySmall,
@@ -175,25 +149,27 @@ fun AudioPlayerSheet(
             )
             Spacer(Modifier.height(20.dp))
 
+            val duration = playback.durationMs
             val total = duration.coerceAtLeast(1L)
             Slider(
-                value = if (dragging) dragValue else (position.toFloat() / total).coerceIn(0f, 1f),
+                value = if (dragging) dragValue else (playback.positionMs.toFloat() / total).coerceIn(0f, 1f),
                 onValueChange = {
                     dragging = true
                     dragValue = it
                 },
                 onValueChangeFinished = {
-                    player.seekTo((dragValue * total).toLong())
-                    position = (dragValue * total).toLong()
+                    playback.seekTo((dragValue * total).toLong())
                     dragging = false
                 },
                 enabled = duration > 0,
                 colors = SliderDefaults.colors(thumbColor = Primary, activeTrackColor = Primary),
             )
             Row(Modifier.fillMaxWidth()) {
-                Text(formatTime(if (dragging) (dragValue * total).toLong() else position), style = MaterialTheme.typography.bodySmall)
+                val shown = if (dragging) (dragValue * total).toLong() else playback.positionMs
+                Text(formatTime(shown), style = MaterialTheme.typography.bodySmall)
                 Spacer(Modifier.weight(1f))
-                Text(if (duration > 0) formatTime(duration) else "--:--", style = MaterialTheme.typography.bodySmall)
+                val prefix = if (lesson.kind == LessonKind.NARRATION) "≈ " else ""
+                Text(if (duration > 0) prefix + formatTime(duration) else "--:--", style = MaterialTheme.typography.bodySmall)
             }
 
             Spacer(Modifier.height(8.dp))
@@ -204,42 +180,31 @@ fun AudioPlayerSheet(
             ) {
                 TextButton(onClick = {
                     speedIndex = (speedIndex + 1) % SPEEDS.size
-                    player.setPlaybackSpeed(SPEEDS[speedIndex])
+                    playback.setSpeed(SPEEDS[speedIndex])
                 }) {
                     Text("${SPEEDS[speedIndex]}x".replace(".0x", "x"), fontWeight = FontWeight.Bold)
                 }
-                IconButton(onClick = { player.seekTo((player.currentPosition - 10_000).coerceAtLeast(0)) }) {
+                IconButton(onClick = { playback.seekTo(playback.positionMs - 10_000) }) {
                     Icon(Icons.Filled.Replay10, "Назад на 10 секунд")
                 }
                 Box(
                     Modifier.size(64.dp).clip(CircleShape).background(Primary),
                     contentAlignment = Alignment.Center,
                 ) {
-                    if (buffering && error == null) {
+                    if (playback.buffering && playback.error == null) {
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(28.dp), strokeWidth = 3.dp)
                     } else {
-                        IconButton(onClick = {
-                            if (error != null) {
-                                error = null
-                                player.prepare()
-                                player.play()
-                            } else if (player.isPlaying) {
-                                player.pause()
-                            } else {
-                                if (player.playbackState == Player.STATE_ENDED) player.seekTo(0)
-                                player.play()
-                            }
-                        }) {
+                        IconButton(onClick = { if (playback.isPlaying) playback.pause() else playback.play() }) {
                             Icon(
-                                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                                if (isPlaying) "Пауза" else "Слушать",
+                                if (playback.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                                if (playback.isPlaying) "Пауза" else "Слушать",
                                 tint = Color.White,
                                 modifier = Modifier.size(36.dp),
                             )
                         }
                     }
                 }
-                IconButton(onClick = { player.seekTo(player.currentPosition + 10_000) }) {
+                IconButton(onClick = { playback.seekTo(playback.positionMs + 10_000) }) {
                     Icon(Icons.Filled.Forward10, "Вперёд на 10 секунд")
                 }
                 IconButton(onClick = onNext, enabled = hasNext) {
@@ -247,17 +212,18 @@ fun AudioPlayerSheet(
                 }
             }
 
-            error?.let {
+            playback.error?.let {
                 Spacer(Modifier.height(8.dp))
                 Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
             }
-            if (course.sourceName.isNotBlank()) {
+            val credit = when {
+                lesson.kind == LessonKind.NARRATION -> "Озвучено синтезом речи на устройстве"
+                course.sourceName.isNotBlank() -> "Запись: ${course.sourceName}"
+                else -> null
+            }
+            credit?.let {
                 Spacer(Modifier.height(12.dp))
-                Text(
-                    "Запись: ${course.sourceName}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                )
+                Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline, textAlign = TextAlign.Center)
             }
         }
     }

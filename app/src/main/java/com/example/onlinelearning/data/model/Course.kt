@@ -26,16 +26,29 @@ data class Lesson(
     val id: String = "",
     val title: String = "",
     val durationMinutes: Int = 0,
-    /** Audio lessons play inside the app; takes priority over [videoUrl]. */
+    /** Streamed audio (mp3/ogg); takes priority over the other sources. */
     val audioUrl: String = "",
-    /** Legacy video lessons are opened in an external player. */
+    /** Streamed video (mp4), played in the in-app player. */
     val videoUrl: String = "",
+    /** Lesson script read aloud on the device with TextToSpeech when there is no recording. */
+    val text: String = "",
     /** Free lessons can be played before the course is bought. */
     val free: Boolean = false,
 ) {
+    val kind: LessonKind
+        get() = when {
+            audioUrl.isNotBlank() -> LessonKind.AUDIO
+            videoUrl.isNotBlank() -> LessonKind.VIDEO
+            text.isNotBlank() -> LessonKind.NARRATION
+            else -> LessonKind.NONE
+        }
+
+    /** Listen-only lessons (recorded audio or narration). */
     val isAudio: Boolean
-        get() = audioUrl.isNotBlank()
+        get() = kind == LessonKind.AUDIO || kind == LessonKind.NARRATION
 }
+
+enum class LessonKind { AUDIO, VIDEO, NARRATION, NONE }
 
 /** Per-user state stored in Firestore under users/{uid}. */
 data class UserProfile(

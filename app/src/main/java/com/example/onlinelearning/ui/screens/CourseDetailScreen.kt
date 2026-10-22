@@ -1,6 +1,5 @@
 package com.example.onlinelearning.ui.screens
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -55,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.onlinelearning.data.model.Course
 import com.example.onlinelearning.data.model.Lesson
+import com.example.onlinelearning.data.model.LessonKind
 import com.example.onlinelearning.ui.CoursesViewModel
 import com.example.onlinelearning.ui.SessionViewModel
 import com.example.onlinelearning.ui.components.CourseImage
@@ -99,19 +99,12 @@ fun CourseDetailScreen(
             showMessage("Купите курс, чтобы открыть этот урок")
             return
         }
-        if (lesson.isAudio) {
-            // Audio lessons play in-app; progress is saved once most of the lesson has been heard.
-            playing = lesson
+        if (lesson.kind == LessonKind.NONE) {
+            showMessage("У этого урока пока нет записи")
             return
         }
-        try {
-            context.startActivity(
-                Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse(lesson.videoUrl), "video/*")
-            )
-            session.completeLesson(course, lesson)
-        } catch (e: ActivityNotFoundException) {
-            showMessage("Нет приложения для воспроизведения видео")
-        }
+        // Every lesson plays in-app; progress is saved once most of it has been played.
+        playing = lesson
     }
 
     fun nextAfter(lesson: Lesson): Lesson? =
@@ -151,7 +144,7 @@ fun CourseDetailScreen(
                     if (course.sourceName.isNotBlank()) {
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "🎧 Аудиоуроки · ${course.sourceName}",
+                            "Источник: ${course.sourceName}",
                             style = MaterialTheme.typography.bodySmall,
                             color = Primary,
                             modifier = Modifier.clickable {
@@ -202,7 +195,7 @@ fun CourseDetailScreen(
 
     playing?.let { lesson ->
         val next = nextAfter(lesson)
-        AudioPlayerSheet(
+        LessonPlayerSheet(
             course = course,
             lesson = lesson,
             hasNext = next != null,
@@ -250,7 +243,12 @@ private fun LessonRow(number: Int, lesson: Lesson, unlocked: Boolean, done: Bool
         Column(Modifier.weight(1f)) {
             Text(lesson.title, style = MaterialTheme.typography.titleMedium)
             Text(
-                (if (lesson.isAudio) "Audio · " else "") + "${lesson.durationMinutes} mins" + if (done) " ✓" else "",
+                when (lesson.kind) {
+                    LessonKind.AUDIO -> "Audio · "
+                    LessonKind.VIDEO -> "Video · "
+                    LessonKind.NARRATION -> "Narrated · "
+                    LessonKind.NONE -> ""
+                } + "${lesson.durationMinutes} mins" + if (done) " ✓" else "",
                 style = MaterialTheme.typography.bodySmall,
                 color = if (done) Orange else MaterialTheme.colorScheme.onSurfaceVariant,
             )

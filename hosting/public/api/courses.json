@@ -66,35 +66,37 @@
     {
       "id": "java-development",
       "title": "Java Development",
-      "author": "Nguyen Shane",
+      "author": "Mehran Sahami · Stanford University",
       "category": "Coding",
-      "price": 190.0,
-      "durationMinutes": 976,
+      "price": 0.0,
+      "durationMinutes": 149,
       "imageUrl": "covers/java-development.webp",
-      "description": "From syntax basics to object-oriented design, collections and concurrency. Build three console apps along the way.",
+      "description": "Real video lectures from Stanford CS106A «Programming Methodology»: operators and loops, methods, strings and writing your own classes in Java. Free course, licensed CC BY-NC-SA.",
       "lessons": [
         {
-          "id": "jd-1",
-          "title": "Introduction",
-          "durationMinutes": 8,
-          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          "id": "jd-l06",
+          "title": "Operators, booleans and loops",
+          "durationMinutes": 46,
+          "videoUrl": "https://archive.org/download/Lecture_6___Programming_Methodology__Stanford_/Lecture_6___Programming_Methodology__Stanford_.ia.mp4",
           "free": true
         },
         {
-          "id": "jd-2",
-          "title": "Variables and types",
-          "durationMinutes": 14,
-          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-          "free": false
+          "id": "jd-l07",
+          "title": "Loop and a half and methods",
+          "durationMinutes": 51,
+          "videoUrl": "https://archive.org/download/Lecture_7___Programming_Methodology__Stanford_/Lecture_7___Programming_Methodology__Stanford_.ia.mp4",
+          "free": true
         },
         {
-          "id": "jd-3",
-          "title": "Classes and objects",
-          "durationMinutes": 20,
-          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-          "free": false
+          "id": "jd-l09",
+          "title": "Strings and writing your own classes",
+          "durationMinutes": 52,
+          "videoUrl": "https://archive.org/download/Lecture_9___Programming_Methodology__Stanford_/Lecture_9___Programming_Methodology__Stanford_.ia.mp4",
+          "free": true
         }
-      ]
+      ],
+      "sourceName": "Stanford Engineering Everywhere (CC BY-NC-SA)",
+      "sourceUrl": "https://see.stanford.edu/Course/CS106A"
     },
     {
       "id": "history-of-computing",
@@ -239,35 +241,58 @@
     {
       "id": "kotlin-android",
       "title": "Android with Kotlin",
-      "author": "Jane Cooper",
+      "author": "Online Learning",
       "category": "Coding",
-      "price": 120.0,
-      "durationMinutes": 720,
+      "price": 0.0,
+      "durationMinutes": 6,
       "imageUrl": "covers/kotlin-android.webp",
-      "description": "Jetpack Compose, ViewModel, Retrofit and Firebase: build a real app from scratch.",
+      "description": "Short narrated lessons on Kotlin basics, null safety, functions, classes and Jetpack Compose. The phone reads every lesson aloud with its built-in voice, so it works even offline.",
       "lessons": [
         {
-          "id": "ka-1",
-          "title": "Setting up Android Studio",
-          "durationMinutes": 10,
-          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          "id": "kt-1",
+          "title": "Why Kotlin for Android",
+          "durationMinutes": 1,
+          "text": "Welcome to Android with Kotlin. In this short course you will learn the language that Google recommends for every new Android app. Kotlin was created by JetBrains, the company behind IntelliJ IDEA and Android Studio. It runs on the Java virtual machine, so it works with every Java library you already know. Since 2019 Android development has been Kotlin first. That means new documentation, samples and libraries such as Jetpack Compose are written for Kotlin. Why do developers like it? First, it is concise. Code that needs a page of Java often fits in a few lines of Kotlin. Second, it is safe. The compiler catches many mistakes, especially the famous null pointer exception, before your app ever runs. Third, it is pleasant to read. Kotlin removes a lot of ceremony, like semicolons and repeated type names. In the next lessons we will look at values and types, null safety, functions, classes, and finally how Kotlin and Jetpack Compose build a screen. Take your time, and replay a lesson whenever you need to.",
           "free": true
         },
         {
-          "id": "ka-2",
-          "title": "Compose basics",
-          "durationMinutes": 22,
-          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          "id": "kt-2",
+          "title": "Values, variables and types",
+          "durationMinutes": 1,
+          "text": "Every program stores data, so let us start there. In Kotlin you create a read only value with the keyword val. Once a val gets a value, it can never point to anything else. If you need something that changes, such as a score in a game, you use the keyword var instead. A good habit is to start with val and switch to var only when you really must change the value. This makes code easier to reason about. Kotlin is statically typed, which means every value has a type that the compiler knows. The basic types are Int for whole numbers, Double for decimal numbers, Boolean for true or false, Char for a single character, and String for text. You rarely have to write these types yourself. When you write val count equals ten, Kotlin infers that count is an Int. Strings support templates. Inside double quotes you can write a dollar sign followed by a name, and Kotlin inserts the value. For example, hello dollar name prints hello, followed by the person's name. Templates make text building short and readable.",
+          "free": true
+        },
+        {
+          "id": "kt-3",
+          "title": "Null safety",
+          "durationMinutes": 1,
+          "text": "Null is a value that means nothing is here. In many languages, using a null by accident crashes the program. Kotlin solves this in the type system. A normal type, like String, can never hold null. If a value may be missing, you add a question mark to the type, for example String question mark. Now the compiler forces you to handle the missing case before you use the value. There are three common tools. The safe call operator, a question mark followed by a dot, calls a method only when the value is not null, and otherwise returns null. The Elvis operator, a question mark followed by a colon, gives a default value when the left side is null. For example, name safe call length, Elvis, zero, returns the length of the name, or zero if there is no name. Finally, the double exclamation mark says, I am sure this is not null. If you are wrong, the app crashes, so use it rarely. With these tools most null pointer crashes simply disappear, and your Android app becomes much more reliable.",
           "free": false
         },
         {
-          "id": "ka-3",
-          "title": "Networking with Retrofit",
-          "durationMinutes": 25,
-          "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+          "id": "kt-4",
+          "title": "Functions and lambdas",
+          "durationMinutes": 1,
+          "text": "Functions are the building blocks of every Kotlin program. You declare a function with the keyword fun, a name, parameters in parentheses, and a return type after a colon. Parameters can have default values, so callers may skip them. You can also pass arguments by name, which makes calls easy to read. When a function only returns one expression, you can write it on one line with an equals sign instead of curly braces. Kotlin also treats functions as values. A lambda is a small function without a name, written inside curly braces. You pass lambdas to other functions all the time. For example, a list of numbers has a function called filter. You give filter a lambda that says which items to keep, such as numbers greater than ten. Inside a lambda with one parameter, Kotlin lets you refer to that parameter with the word it. On Android, lambdas are everywhere: a button takes a lambda called on click, and Jetpack Compose describes whole screens with nested lambdas. Once lambdas feel natural, modern Android code becomes much easier to follow.",
+          "free": false
+        },
+        {
+          "id": "kt-5",
+          "title": "Classes and data classes",
+          "durationMinutes": 1,
+          "text": "Kotlin is object oriented, so you group data and behavior in classes. You declare a class with the keyword class and its name. The primary constructor goes right after the name, in parentheses. If you mark a constructor parameter with val or var, it becomes a property of the class automatically. That removes the long lists of fields and getters you might know from Java. Classes are final by default. If you want another class to inherit from yours, you mark it as open. For classes that mostly hold data, Kotlin offers data classes. Add the word data before class, and Kotlin generates useful methods for you: equals and hash code compare the content, to string prints the values, and copy creates a changed copy while keeping the original. In this very app, a course and a lesson are data classes. When the catalog arrives from the network, Retrofit and Gson turn the JSON into these objects. Another handy feature is the object keyword, which creates a single instance, a simple and safe way to write a singleton.",
+          "free": false
+        },
+        {
+          "id": "kt-6",
+          "title": "Jetpack Compose basics",
+          "durationMinutes": 1,
+          "text": "Jetpack Compose is the modern way to build Android user interfaces, and it is written entirely in Kotlin. Instead of describing screens in XML files, you write composable functions. A composable function is a normal Kotlin function marked with the at Composable annotation. It describes what the screen should look like for the current data. You arrange elements with layouts such as Column, which stacks items vertically, Row, which places them side by side, and Box, which layers them on top of each other. Text shows a string, Button reacts to taps, and modifiers change size, padding, color and behavior. The key idea is state. When a value that the interface reads changes, Compose automatically calls the affected functions again and redraws only what changed. This process is called recomposition. You keep state with remember and mutable state of, or in a view model that survives screen rotation. Every screen in this app, from the course list to this audio player, is built with Compose. Congratulations, you have finished the course. Now open Android Studio and build something of your own.",
           "free": false
         }
-      ]
+      ],
+      "sourceName": "",
+      "sourceUrl": ""
     },
     {
       "id": "photography",
