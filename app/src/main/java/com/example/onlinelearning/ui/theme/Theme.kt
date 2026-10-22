@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.onlinelearning.data.ThemeMode
 
 // Palette taken from the Figma "Online Learning App" design.
 val Primary = Color(0xFF3D5CFF)
@@ -70,4 +71,12 @@ fun OnlineLearningTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Co
         typography = AppTypography,
         content = content,
     )
+}
+
+/** Whether [mode] resolves to the dark color scheme right now. */
+@Composable
+fun ThemeMode.isDark(): Boolean = when (this) {
+    ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    ThemeMode.LIGHT -> false
+    ThemeMode.DARK -> true
 }

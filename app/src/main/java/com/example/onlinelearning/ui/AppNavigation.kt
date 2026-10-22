@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -27,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.onlinelearning.ui.theme.isDark
 import com.example.onlinelearning.ui.screens.AccountScreen
 import com.example.onlinelearning.ui.screens.CourseDetailScreen
 import com.example.onlinelearning.ui.screens.CoursesScreen
@@ -65,6 +67,9 @@ fun AppNavigation() {
     val session: SessionViewModel = viewModel(factory = factory)
     val courses: CoursesViewModel = viewModel(factory = factory)
     val auth: AuthViewModel = viewModel(factory = factory)
+    val theme: ThemeViewModel = viewModel(factory = factory)
+    val themeMode by theme.mode.collectAsStateWithLifecycle()
+    val isDark = themeMode.isDark()
 
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -113,7 +118,14 @@ fun AppNavigation() {
                 SignUpScreen(auth, onSignedUp = goHome, onLogIn = { nav.navigate(Routes.LOGIN) { popUpTo(Routes.SIGN_UP) { inclusive = true } } })
             }
             composable(Routes.HOME) {
-                HomeScreen(session, courses, onCourse = openCourse, onSeeAll = { nav.switchTab(Routes.COURSES) })
+                HomeScreen(
+                    session,
+                    courses,
+                    onCourse = openCourse,
+                    onSeeAll = { nav.switchTab(Routes.COURSES) },
+                    isDark = isDark,
+                    onToggleTheme = { theme.toggle(isDark) },
+                )
             }
             composable(Routes.COURSES) { CoursesScreen(courses, openCourse) }
             composable(Routes.MY_COURSES) {
@@ -126,6 +138,8 @@ fun AppNavigation() {
                     openCourse,
                     onLogIn = { nav.navigate(Routes.LOGIN) },
                     onSignedOut = { nav.navigate(Routes.ONBOARDING) { popUpTo(0) { inclusive = true } } },
+                    themeMode = themeMode,
+                    onThemeMode = theme::set,
                 )
             }
             composable(Routes.COURSE) { entry ->

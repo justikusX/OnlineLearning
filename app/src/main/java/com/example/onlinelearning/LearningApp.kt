@@ -3,6 +3,7 @@ package com.example.onlinelearning
 import android.app.Application
 import com.example.onlinelearning.data.AuthRepository
 import com.example.onlinelearning.data.CourseRepository
+import com.example.onlinelearning.data.ThemePreferences
 import com.example.onlinelearning.data.UserRepository
 import com.example.onlinelearning.data.remote.NetworkModule
 import com.google.firebase.FirebaseApp
@@ -22,6 +23,7 @@ class LearningApp : Application() {
             courses = CourseRepository(this, NetworkModule.courseApi),
             auth = AuthRepository(firebase?.let { FirebaseAuth.getInstance(it) }),
             users = UserRepository(firebase?.let { FirebaseFirestore.getInstance(it) }),
+            theme = ThemePreferences(this),
         )
     }
 }
@@ -31,4 +33,5 @@ class AppContainer(
     val courses: CourseRepository,
     val auth: AuthRepository,
     val users: UserRepository,
+    val theme: ThemePreferences,
 )

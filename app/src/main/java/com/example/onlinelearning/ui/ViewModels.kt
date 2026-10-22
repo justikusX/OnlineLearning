@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.onlinelearning.LearningApp
 import com.example.onlinelearning.data.AuthRepository
 import com.example.onlinelearning.data.CourseRepository
+import com.example.onlinelearning.data.ThemeMode
+import com.example.onlinelearning.data.ThemePreferences
 import com.example.onlinelearning.data.UserRepository
 import com.example.onlinelearning.data.toUserMessage
 import com.example.onlinelearning.data.model.Course
@@ -33,6 +35,7 @@ object AppViewModelFactory {
         initializer { SessionViewModel(container().auth, container().users) }
         initializer { AuthViewModel(container().auth, container().users) }
         initializer { CoursesViewModel(container().courses) }
+        initializer { ThemeViewModel(container().theme) }
     }
 
     private fun androidx.lifecycle.viewmodel.CreationExtras.container() =
@@ -207,4 +210,14 @@ class CoursesViewModel(private val repository: CourseRepository) : ViewModel() {
     }
 
     fun course(id: String): Course? = _state.value.courses.firstOrNull { it.id == id }
+}
+
+/** Light / dark / system theme switch, persisted in [ThemePreferences]. */
+class ThemeViewModel(private val prefs: ThemePreferences) : ViewModel() {
+    val mode: StateFlow<ThemeMode> = prefs.mode
+
+    fun set(mode: ThemeMode) = prefs.set(mode)
+
+    /** Quick toggle: flips whatever is on screen now to the opposite theme. */
+    fun toggle(currentlyDark: Boolean) = prefs.set(if (currentlyDark) ThemeMode.LIGHT else ThemeMode.DARK)
 }

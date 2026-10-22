@@ -29,6 +29,15 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SearchOff
+import androidx.compose.material.icons.filled.BrightnessAuto
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import com.example.onlinelearning.data.ThemeMode
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -70,6 +79,8 @@ fun HomeScreen(
     courses: CoursesViewModel,
     onCourse: (String) -> Unit,
     onSeeAll: () -> Unit,
+    isDark: Boolean,
+    onToggleTheme: () -> Unit,
 ) {
     val user by session.user.collectAsStateWithLifecycle()
     val profile by session.profile.collectAsStateWithLifecycle()
@@ -79,15 +90,24 @@ fun HomeScreen(
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Box {
-                Column(
+                Row(
                     Modifier
                         .fillMaxWidth()
                         .background(Primary)
                         .statusBarsPadding()
-                        .padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 72.dp),
+                        .padding(start = 20.dp, end = 8.dp, top = 24.dp, bottom = 72.dp),
                 ) {
-                    Text("Hi, $name", style = MaterialTheme.typography.headlineSmall, color = Color.White)
-                    Text("Let's start learning", color = Color.White.copy(alpha = 0.8f))
+                    Column(Modifier.weight(1f)) {
+                        Text("Hi, $name", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                        Text("Let's start learning", color = Color.White.copy(alpha = 0.8f))
+                    }
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            if (isDark) Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                            contentDescription = if (isDark) "Светлая тема" else "Тёмная тема",
+                            tint = Color.White,
+                        )
+                    }
                 }
                 LearnedTodayCard(
                     minutes = profile?.learnedTodayMinutes ?: 0,
@@ -289,6 +309,8 @@ fun AccountScreen(
     onCourse: (String) -> Unit,
     onLogIn: () -> Unit,
     onSignedOut: () -> Unit,
+    themeMode: ThemeMode,
+    onThemeMode: (ThemeMode) -> Unit,
 ) {
     val user by session.user.collectAsStateWithLifecycle()
     val profile by session.profile.collectAsStateWithLifecycle()
@@ -311,6 +333,10 @@ fun AccountScreen(
                 Text(name, style = MaterialTheme.typography.titleLarge)
                 user?.email?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
+        }
+        item {
+            Text("Theme", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+            ThemeSelector(themeMode, onThemeMode, Modifier.padding(start = 24.dp, end = 24.dp, bottom = 16.dp))
         }
         item {
             Text("Favourite", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
@@ -348,6 +374,28 @@ fun AccountScreen(
                         onSignedOut()
                     },
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ThemeSelector(mode: ThemeMode, onMode: (ThemeMode) -> Unit, modifier: Modifier = Modifier) {
+    val options = listOf(
+        Triple(ThemeMode.SYSTEM, "System", Icons.Filled.BrightnessAuto),
+        Triple(ThemeMode.LIGHT, "Light", Icons.Filled.LightMode),
+        Triple(ThemeMode.DARK, "Dark", Icons.Filled.DarkMode),
+    )
+    SingleChoiceSegmentedButtonRow(modifier.fillMaxWidth()) {
+        options.forEachIndexed { index, (option, label, icon) ->
+            SegmentedButton(
+                selected = mode == option,
+                onClick = { onMode(option) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                icon = { Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp)) },
+            ) {
+                Text(label)
             }
         }
     }
