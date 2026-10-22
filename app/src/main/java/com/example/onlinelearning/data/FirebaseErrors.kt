@@ -16,12 +16,25 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 fun Throwable.isUserCancellation(): Boolean = this is GetCredentialCancellationException
 
 /** Human-readable (Russian) text for Firebase and sign-in errors shown in the UI. */
-fun Throwable.toUserMessage(): String = when (this) {
+fun Throwable.toUserMessage(): String = when {
+    message.orEmpty().contains("BILLING_NOT_ENABLED") ->
+        "Firebase отправляет SMS только на тарифе Blaze. Для проверки добавьте тестовый номер: " +
+            "Authentication → Sign-in method → Phone → Phone numbers for testing"
+    message.orEmpty().contains("28444") || message.orEmpty().contains("Developer console is not set up correctly") ->
+        "Google: приложение не зарегистрировано. Добавьте SHA-1 этой сборки в Firebase (Project settings → Your apps), " +
+            "затем скачайте google-services.json заново"
+    else -> toUserMessageByType()
+}
+
+private fun Throwable.toUserMessageByType(): String = when (this) {
     is FirebaseNotConfiguredException -> message.orEmpty()
     is FirebaseNetworkException -> "Нет подключения к интернету"
     is FirebaseTooManyRequestsException -> "Слишком много попыток. Попробуйте позже"
-    is NoCredentialException -> "На телефоне нет аккаунта Google — добавьте его в настройках"
-    is GetCredentialException -> "Не удалось войти через Google: ${message.orEmpty()}"
+    // Credential Manager also reports "no credentials" when the build's SHA-1 is not registered in Firebase.
+    is NoCredentialException ->
+        "Google не предложил аккаунт: проверьте, что на телефоне есть аккаунт Google и что SHA-1 этой сборки " +
+            "добавлен в Firebase (Project settings → Your apps)"
+    is GetCredentialException -> "Не удалось войти через Google ($type): ${message.orEmpty()}"
     is FirebaseAuthWeakPasswordException -> "Слишком простой пароль: нужно не меньше 6 символов"
     is FirebaseAuthUserCollisionException -> "Этот email уже зарегистрирован — войдите через Log in"
     is FirebaseAuthInvalidUserException -> "Аккаунт не найден"
