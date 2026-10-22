@@ -91,6 +91,12 @@ class SessionViewModel(
         users.completeLesson(uid, course.id, lesson.id, lesson.durationMinutes)
     }
 
+    fun setAvatar(avatar: String?) = withUser { uid -> users.setAvatar(uid, avatar) }
+
+    fun showMessage(text: String) {
+        _messages.tryEmit(text)
+    }
+
     fun signOut() = auth.signOut()
 
     private fun withUser(block: suspend (uid: String) -> Unit) {

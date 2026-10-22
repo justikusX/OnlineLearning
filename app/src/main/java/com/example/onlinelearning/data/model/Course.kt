@@ -60,4 +60,6 @@ data class UserProfile(
     /** courseId -> ids of completed lessons. */
     val progress: Map<String, List<String>> = emptyMap(),
     val learnedTodayMinutes: Int = 0,
+    /** Profile photo: 256x256 JPEG encoded as Base64 (see AvatarCodec); empty when not set. */
+    val avatar: String = "",
 )

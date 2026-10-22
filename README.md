@@ -10,7 +10,8 @@ Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Fireba
 | `data/remote/CourseApi.kt` | Retrofit + OkHttp: `GET {COURSES_API_BASE_URL}courses.json` (по умолчанию — файл `hosting/public/api/courses.json` прямо из этого репозитория на GitHub) |
 | `data/CourseRepository.kt` | Кэш каталога; если API недоступен — берёт `assets/courses.json` |
 | `data/AuthRepository.kt` | Firebase Auth: вход, регистрация, сброс пароля |
-| `data/UserRepository.kt` | Firestore `users/{uid}`: избранное, покупки, прогресс уроков |
+| `data/UserRepository.kt` | Firestore `users/{uid}`: избранное, покупки, прогресс уроков, аватар |
+| `data/AvatarCodec.kt` | Фото из галереи (Photo Picker) → квадрат 256×256 JPEG в Base64 в профиле Firestore, без Firebase Storage |
 | `ui/ViewModels.kt` | `SessionViewModel`, `AuthViewModel`, `CoursesViewModel` |
 | `ui/screens/*` | Онбординг, Log In / Sign Up, Home, Course (поиск + категории), карточка курса с оплатой, My courses, Account |
 | `ui/player/LessonPlayback.kt`, `ui/screens/LessonPlayerSheet.kt` | Встроенный плеер уроков: аудио и видео (Media3 ExoPlayer) и озвучка текста (TextToSpeech); пауза, перемотка ±10 с, скорость 1–2x, следующий урок |

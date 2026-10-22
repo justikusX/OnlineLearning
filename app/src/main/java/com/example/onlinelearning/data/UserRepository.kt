@@ -51,6 +51,11 @@ class UserRepository(private val db: FirebaseFirestore?) {
         doc.set(data, SetOptions.merge()).await()
     }
 
+    /** Saves the Base64 avatar, or removes it when [avatar] is null. */
+    suspend fun setAvatar(uid: String, avatar: String?) {
+        userDoc(uid).set(mapOf("avatar" to (avatar ?: FieldValue.delete())), SetOptions.merge()).await()
+    }
+
     suspend fun setFavorite(uid: String, courseId: String, favorite: Boolean) {
         val value = if (favorite) FieldValue.arrayUnion(courseId) else FieldValue.arrayRemove(courseId)
         userDoc(uid).set(mapOf("favorites" to value), SetOptions.merge()).await()

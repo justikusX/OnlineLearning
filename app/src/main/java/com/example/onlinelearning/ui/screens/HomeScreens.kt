@@ -1,6 +1,10 @@
 package com.example.onlinelearning.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,40 +26,48 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SearchOff
-import androidx.compose.material.icons.filled.BrightnessAuto
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import com.example.onlinelearning.data.ThemeMode
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.onlinelearning.data.AvatarCodec
+import com.example.onlinelearning.data.ThemeMode
 import com.example.onlinelearning.data.model.Course
 import com.example.onlinelearning.data.model.UserProfile
 import com.example.onlinelearning.ui.CoursesViewModel
@@ -65,11 +77,13 @@ import com.example.onlinelearning.ui.components.CourseRow
 import com.example.onlinelearning.ui.components.EmptyState
 import com.example.onlinelearning.ui.components.LoadingBox
 import com.example.onlinelearning.ui.components.PrimaryButton
+import com.example.onlinelearning.ui.components.UserAvatar
 import com.example.onlinelearning.ui.theme.Ink
 import com.example.onlinelearning.ui.theme.Orange
 import com.example.onlinelearning.ui.theme.PinkLight
 import com.example.onlinelearning.ui.theme.Primary
 import com.example.onlinelearning.ui.theme.PrimaryLight
+import kotlinx.coroutines.launch
 
 private const val DAILY_GOAL_MINUTES = 60
 
@@ -81,6 +95,7 @@ fun HomeScreen(
     onSeeAll: () -> Unit,
     isDark: Boolean,
     onToggleTheme: () -> Unit,
+    onAvatarClick: () -> Unit,
 ) {
     val user by session.user.collectAsStateWithLifecycle()
     val profile by session.profile.collectAsStateWithLifecycle()
@@ -108,6 +123,15 @@ fun HomeScreen(
                             tint = Color.White,
                         )
                     }
+                    UserAvatar(
+                        profile?.avatar.orEmpty(),
+                        name,
+                        40.dp,
+                        Modifier
+                            .padding(start = 4.dp, end = 12.dp, top = 4.dp)
+                            .border(2.dp, Color.White, CircleShape)
+                            .clickable(onClick = onAvatarClick),
+                    )
                 }
                 LearnedTodayCard(
                     minutes = profile?.learnedTodayMinutes ?: 0,
@@ -318,20 +342,58 @@ fun AccountScreen(
     val favorites = state.courses.filter { profile?.favorites?.contains(it.id) == true }
     val name = profile?.name?.takeIf { it.isNotBlank() } ?: user?.displayName ?: "Guest"
 
+    // System photo picker: no storage permission needed; falls back to the file picker on old devices.
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var savingPhoto by remember { mutableStateOf(false) }
+    val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            scope.launch {
+                savingPhoto = true
+                runCatching { AvatarCodec.encode(context, uri) }
+                    .onSuccess { session.setAvatar(it) }
+                    .onFailure { session.showMessage("Не удалось открыть фото") }
+                savingPhoto = false
+            }
+        }
+    }
+
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("Account", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.align(Alignment.Start))
                 Spacer(Modifier.height(24.dp))
                 Box(
-                    Modifier.size(88.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center,
+                    Modifier.clickable {
+                        if (user == null) session.showMessage("Войдите, чтобы выбрать фото профиля")
+                        else pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    },
                 ) {
-                    Text(name.take(1).uppercase(), style = MaterialTheme.typography.headlineMedium, color = Primary)
+                    UserAvatar(profile?.avatar.orEmpty(), name, 88.dp)
+                    Box(
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(30.dp)
+                            .clip(CircleShape)
+                            .background(Primary)
+                            .border(2.dp, MaterialTheme.colorScheme.background, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (savingPhoto) {
+                            CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(14.dp))
+                        } else {
+                            Icon(Icons.Filled.PhotoCamera, contentDescription = "Выбрать фото", tint = Color.White, modifier = Modifier.size(16.dp))
+                        }
+                    }
                 }
                 Spacer(Modifier.height(12.dp))
                 Text(name, style = MaterialTheme.typography.titleLarge)
                 user?.email?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                if (!profile?.avatar.isNullOrBlank()) {
+                    TextButton(onClick = { session.setAvatar(null) }) {
+                        Text("Удалить фото", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
             }
         }
         item {

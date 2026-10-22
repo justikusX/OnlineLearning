@@ -125,6 +125,7 @@ fun AppNavigation() {
                     onSeeAll = { nav.switchTab(Routes.COURSES) },
                     isDark = isDark,
                     onToggleTheme = { theme.toggle(isDark) },
+                    onAvatarClick = { nav.switchTab(Routes.ACCOUNT) },
                 )
             }
             composable(Routes.COURSES) { CoursesScreen(courses, openCourse) }
