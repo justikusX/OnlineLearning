@@ -3,18 +3,55 @@
 Приложение по макету Figma «Online Learning App Design (Community)».
 Kotlin + Jetpack Compose, **Retrofit** — каталог курсов, **Firebase** — Auth и Firestore.
 
-## Архитектура
+## Архитектура: MVVM
+
+Код разделён на три пакета по слоям **Model — View — ViewModel**:
+
+```
+com.example.onlinelearning
+├── model/          M — данные и бизнес-логика, ничего не знает об интерфейсе
+│   ├── entity/     Course, Lesson, UserProfile, AppNotification, LearningStats
+│   ├── remote/     CourseApi (Retrofit)
+│   ├── repository/ AuthRepository, UserRepository, CourseRepository, SessionRepository, ThemePreferences
+│   ├── player/     LessonPlayback: ExoPlayer и TextToSpeech
+│   └── util/       AvatarCodec, FirebaseErrors
+├── viewmodel/      VM — состояние экранов (StateFlow) и действия пользователя
+│   ├── AppViewModelFactory.kt
+│   ├── SessionViewModel, AuthViewModel, PhoneAuthViewModel, ThemeViewModel
+│   ├── HomeViewModel, CoursesViewModel, CourseDetailViewModel
+│   └── MessagesViewModel, AccountViewModel
+├── view/           V — Jetpack Compose: только отображение состояния и передача событий во ViewModel
+│   ├── AppNavigation.kt, screens/, components/, theme/
+├── LearningApp.kt  AppContainer — создаёт репозитории один раз на процесс
+└── MainActivity.kt
+```
+
+Правила, которых придерживается код:
+
+- **View** (экраны Compose) не обращается к Firebase, Retrofit и репозиториям. Экран получает свой ViewModel,
+  подписывается на `state` через `collectAsStateWithLifecycle()` и вызывает методы ViewModel
+  (`viewModel.play(lesson)`, `viewModel.buy()`, `viewModel.onEmailChange(...)`). В экранах остаётся только
+  чисто визуальное состояние: открыт ли фильтр, положение ползунка во время перетаскивания.
+- **ViewModel** хранит состояние экрана в `StateFlow` (`HomeUiState`, `CourseDetailUiState`, `PaymentState`, …),
+  собирает его из репозиториев (`combine`) и выполняет действия в `viewModelScope`. Одноразовые события
+  (сообщения для Snackbar, «Clocking in!») отдаются через `SharedFlow`. ViewModel не знает о Compose-экранах.
+- **Model** — репозитории и сущности. `SessionRepository` держит одного слушателя профиля Firestore на всё
+  приложение, `CourseRepository.catalog` — один каталог для всех экранов.
+- ViewModel создаются фабрикой `AppViewModelFactory`, которая берёт репозитории из `AppContainer`.
+  `CourseDetailViewModel` живёт, пока открыта страница курса: id курса он читает из маршрута через
+  `SavedStateHandle`, а при закрытии страницы останавливает плеер в `onCleared()`.
 
 | Слой | Что делает |
 |---|---|
-| `data/remote/CourseApi.kt` | Retrofit + OkHttp: `GET {COURSES_API_BASE_URL}courses.json` (по умолчанию — файл `hosting/public/api/courses.json` прямо из этого репозитория на GitHub) |
-| `data/CourseRepository.kt` | Кэш каталога; если API недоступен — берёт `assets/courses.json` |
-| `data/AuthRepository.kt` | Firebase Auth: вход, регистрация, сброс пароля |
-| `data/UserRepository.kt` | Firestore `users/{uid}`: избранное, покупки, прогресс уроков, аватар |
-| `data/AvatarCodec.kt` | Фото из галереи (Photo Picker) → квадрат 256×256 JPEG в Base64 в профиле Firestore, без Firebase Storage |
-| `ui/ViewModels.kt` | `SessionViewModel`, `AuthViewModel`, `CoursesViewModel` |
-| `ui/screens/*` | Экраны из макета Figma: онбординг, Log In / Sign Up (+ Google и телефон), Continue with Phone / Verify Phone, Home (Learned today, Learning Plan, Meetup), Course (категории, All/Popular/New), Search + Search Filter, карточка курса (BESTSELLER, видео в шапке), Payment Method / Payment Password / Successful purchase, Clocking in!, My courses (сетка), Notifications (message / notification), Account (Favourite, Edit Account, Settings and Privacy, Help) |
-| `ui/player/LessonPlayback.kt`, `ui/screens/LessonPlayerSheet.kt` | Встроенный плеер уроков: аудио и видео (Media3 ExoPlayer) и озвучка текста (TextToSpeech); пауза, перемотка ±10 с, скорость 1–2x, следующий урок |
+| `model/remote/CourseApi.kt` | Retrofit + OkHttp: `GET {COURSES_API_BASE_URL}courses.json` (по умолчанию — файл `hosting/public/api/courses.json` прямо из этого репозитория на GitHub) |
+| `model/repository/CourseRepository.kt` | Каталог в `StateFlow`; если API недоступен — берёт `assets/courses.json` |
+| `model/repository/AuthRepository.kt` | Firebase Auth: вход, регистрация, Google, телефон, сброс пароля |
+| `model/repository/UserRepository.kt` | Firestore `users/{uid}`: избранное, покупки, прогресс уроков, уведомления, аватар |
+| `model/repository/SessionRepository.kt` | Текущий пользователь и его профиль для всех ViewModel |
+| `model/util/AvatarCodec.kt` | Фото из галереи (Photo Picker) → квадрат 256×256 JPEG в Base64 в профиле Firestore, без Firebase Storage |
+| `model/player/LessonPlayback.kt` | Воспроизведение уроков: аудио и видео (Media3 ExoPlayer) и озвучка текста (TextToSpeech) |
+| `viewmodel/*` | По ViewModel на экран или группу экранов (см. схему выше) |
+| `view/screens/*` | Экраны из макета Figma: онбординг, Log In / Sign Up (+ Google и телефон), Continue with Phone / Verify Phone, Home (Learned today, Learning Plan, Meetup), Course (категории, All/Popular/New), Search + Search Filter, карточка курса (BESTSELLER, видео в шапке), Payment Method / Payment Password / Successful purchase, Clocking in!, My courses (сетка), Notifications (message / notification), Account (Favourite, Edit Account, Settings and Privacy, Help) |
 
 ## Уроки
 
