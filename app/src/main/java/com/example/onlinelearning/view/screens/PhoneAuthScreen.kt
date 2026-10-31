@@ -59,7 +59,7 @@ fun Context.findActivity(): Activity? {
     return null
 }
 
-/** Phone sign-in from the design: "Continue with Phone" → "Verify Phone" → "Success". */
+
 @Composable
 fun PhoneAuthScreen(viewModel: PhoneAuthViewModel, onDone: () -> Unit, onClose: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()

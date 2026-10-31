@@ -33,7 +33,7 @@ import com.example.onlinelearning.model.entity.LearningStats
 import com.example.onlinelearning.view.components.PrimaryButton
 import com.example.onlinelearning.view.theme.Primary
 
-/** "Clocking in! GOOD JOB!" card: today, total hours, active days and this week's record. */
+
 @Composable
 fun ClockingInDialog(stats: LearningStats, onDismiss: () -> Unit) {
     val context = LocalContext.current

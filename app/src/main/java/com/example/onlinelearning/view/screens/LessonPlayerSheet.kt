@@ -55,11 +55,7 @@ import com.example.onlinelearning.model.player.MediaLessonPlayback
 import com.example.onlinelearning.view.theme.PinkLight
 import com.example.onlinelearning.view.theme.Primary
 
-/**
- * Bottom-sheet player for every lesson kind: streamed audio, streamed video (shown above the controls)
- * and on-device narration of the lesson text. [playback] and the [speed] belong to CourseDetailViewModel,
- * which also tracks completion; playback stops when the sheet is closed.
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LessonPlayerSheet(

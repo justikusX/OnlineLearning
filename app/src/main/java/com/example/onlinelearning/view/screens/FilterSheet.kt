@@ -41,7 +41,7 @@ import com.example.onlinelearning.viewmodel.CourseFilter
 import com.example.onlinelearning.viewmodel.DurationRange
 import kotlin.math.roundToInt
 
-/** "Search Filter" bottom sheet from the design: categories, price range and duration. */
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterSheet(

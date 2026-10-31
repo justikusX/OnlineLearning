@@ -70,7 +70,7 @@ import com.example.onlinelearning.view.theme.PinkLight
 import com.example.onlinelearning.view.theme.Primary
 import com.example.onlinelearning.viewmodel.CourseDetailViewModel
 
-/** Course page: cover, description, lessons, the lesson player and the demo checkout. */
+
 @Composable
 fun CourseDetailScreen(
     viewModel: CourseDetailViewModel,

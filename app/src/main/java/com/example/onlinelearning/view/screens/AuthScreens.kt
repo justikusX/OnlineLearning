@@ -177,7 +177,7 @@ fun LoginScreen(viewModel: AuthViewModel, onLoggedIn: () -> Unit, onSignUp: () -
     }
 }
 
-/** "Or login with" row from the design: Google and phone number. */
+
 @Composable
 private fun OrLoginWith(onGoogle: () -> Unit, onPhone: () -> Unit) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {

@@ -47,7 +47,7 @@ import com.example.onlinelearning.view.theme.Orange
 import com.example.onlinelearning.view.theme.Primary
 import com.example.onlinelearning.viewmodel.MessagesViewModel
 
-/** Message tab, titled "Notifications" in the design: "message" and "notification" sub-tabs. */
+
 @Composable
 fun MessagesScreen(viewModel: MessagesViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()

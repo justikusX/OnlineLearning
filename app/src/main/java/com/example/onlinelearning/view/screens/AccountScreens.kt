@@ -66,7 +66,7 @@ import com.example.onlinelearning.view.theme.Primary
 import com.example.onlinelearning.viewmodel.AccountViewModel
 import com.example.onlinelearning.viewmodel.HomeViewModel
 
-/** Account tab: photo, name and the menu from the design. */
+
 @Composable
 fun AccountScreen(
     viewModel: AccountViewModel,
@@ -81,7 +81,7 @@ fun AccountScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(viewModel) { viewModel.messages.collect { showMessage(it) } }
 
-    // System photo picker: no storage permission needed; falls back to the file picker on old devices.
+
     val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) viewModel.onPhotoPicked(uri)
     }
@@ -157,7 +157,7 @@ private fun MenuRow(title: String, onClick: () -> Unit) {
     }
 }
 
-/** Top bar with a back arrow and a centered title, used by the Account sub-screens. */
+
 @Composable
 fun BackTitleBar(title: String, onBack: () -> Unit) {
     Box(Modifier.fillMaxWidth().height(56.dp)) {

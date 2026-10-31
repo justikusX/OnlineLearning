@@ -79,7 +79,7 @@ import com.example.onlinelearning.viewmodel.CoursesViewModel
 import com.example.onlinelearning.viewmodel.HomeViewModel
 import com.example.onlinelearning.viewmodel.SessionViewModel
 
-/** Home tab: greeting, "Learned today", promo cards, learning plan, Meetup and popular courses. */
+
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,

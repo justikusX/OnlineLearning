@@ -46,10 +46,6 @@ import com.example.onlinelearning.viewmodel.CourseDetailViewModel.Companion.PIN_
 import com.example.onlinelearning.viewmodel.PayStep
 import com.example.onlinelearning.viewmodel.PaymentState
 
-/**
- * Demo checkout from the design: "Payment Method" (card) → "Payment Password" (6-digit PIN) →
- * "Successful purchase!". The steps and the PIN live in [CourseDetailViewModel]; this View only draws [state].
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentFlow(
